@@ -42,8 +42,8 @@ const productSchema = new mongoose.Schema({
     type: String,
     required: [true, "A product must have a category"],
     enum: {
-      values: ["fertilizers", "seeds", "equipment"],
-      message: "Category is either: fertilizers, seeds, equipment",
+      values: ["fertilizers", "seeds", "insecticide","fungicide"],
+      message: "Category is either: fertilizers, seeds, Insecticide,fungicide",
     },
   },
   image: {
