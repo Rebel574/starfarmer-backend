@@ -25,7 +25,7 @@ app.set("trust proxy", 1);
 app.use(helmet()); // Set security HTTP headers
 app.use(
   cors({
-    origin: "http://localhost:5173", // Vite default port
+    origin: "https://starfarmer-frontend.onrender.com", // Vite default port
     credentials: true,
   }),
 );
