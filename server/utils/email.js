@@ -55,7 +55,7 @@ async function createTransporter() {
 
 // Send an email using Nodemailer
 export const sendVerificationEmail = async (email, token) => {
-  const verificationUrl = `http://localhost:5173/verify-email?token=${token}`;
+  const verificationUrl = `https://starfarmer-frontend.onrender.com/verify-email?token=${token}`;
 
   const transporter = await createTransporter();
 
@@ -78,7 +78,7 @@ export const sendVerificationEmail = async (email, token) => {
 };
 
 export const sendPasswordResetEmail = async (email, token) => {
-  const resetUrl = `http://localhost:5173/reset-password?token=${token}`;
+  const resetUrl = `https://starfarmer-frontend.onrender.com/reset-password?token=${token}`;
 
   const mailOptions = {
     from: process.env.EMAIL_FROM,
