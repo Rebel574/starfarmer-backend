@@ -1,7 +1,7 @@
 import nodemailer from "nodemailer";
 import { google } from "googleapis";
 import dotenv from "dotenv";
-import { format } from 'date-fns'
+import { format } from "date-fns";
 // Load environment variables
 dotenv.config();
 
@@ -104,7 +104,10 @@ export const sendPasswordResetEmail = async (email, token) => {
 
 // Send order confirmation email
 const formatCurrency = (amount) => {
-  return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(amount);
+  return new Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency: "INR",
+  }).format(amount);
 };
 
 export const sendOrderConfirmation = async (userEmail, orderDetails) => {
@@ -117,7 +120,10 @@ export const sendOrderConfirmation = async (userEmail, orderDetails) => {
   // --- ---
 
   // Calculate item subtotal for clarity
-  const itemsSubtotal = orderDetails.items.reduce((sum, item) => sum + item.quantity * item.price, 0);
+  const itemsSubtotal = orderDetails.items.reduce(
+    (sum, item) => sum + item.quantity * item.price,
+    0,
+  );
 
   const mailOptions = {
     from: `"${companyName}" <${process.env.EMAIL_FROM}>`, // Add sender name
@@ -168,8 +174,8 @@ export const sendOrderConfirmation = async (userEmail, orderDetails) => {
             <div class="order-summary">
               <h3 style="margin-bottom: 10px;">Order Summary</h3>
               <p><strong>Order ID:</strong> ${orderDetails._id}</p>
-              <p><strong>Order Date:</strong> ${format(new Date(orderDetails.createdAt), 'PPP p')}</p> <p><strong>Payment Method:</strong> ${orderDetails.paymentMethod === 'cod' ? 'Cash on Delivery' : 'Online Payment'}</p>
-              <p><strong>Payment Status:</strong> ${orderDetails.paymentStatus} ${orderDetails.paymentMethod !== 'cod' && orderDetails.gatewayTransactionId ? `(Gateway ID: ${orderDetails.gatewayTransactionId})` : ''}</p>
+              <p><strong>Order Date:</strong> ${format(new Date(orderDetails.createdAt), "PPP p")}</p> <p><strong>Payment Method:</strong> ${orderDetails.paymentMethod === "cod" ? "Cash on Delivery" : "Online Payment"}</p>
+              <p><strong>Payment Status:</strong> ${orderDetails.paymentStatus} ${orderDetails.paymentMethod !== "cod" && orderDetails.gatewayTransactionId ? `(Gateway ID: ${orderDetails.gatewayTransactionId})` : ""}</p>
             </div>
 
             <div class="items-table">
@@ -186,7 +192,8 @@ export const sendOrderConfirmation = async (userEmail, orderDetails) => {
                 <tbody>
                   ${orderDetails.items
                     .map((item) => {
-                      const productName = item.productId?.name || "Product Unavailable"; // Safe access
+                      const productName =
+                        item.productId?.name.en || "Product Unavailable"; // Safe access
                       const itemSubtotal = item.quantity * item.price;
                       return `
                         <tr>
@@ -208,7 +215,7 @@ export const sendOrderConfirmation = async (userEmail, orderDetails) => {
               <h3 style="margin-bottom: 10px;">Shipping Address</h3>
               <p style="margin: 2px 0;"><strong>${orderDetails.shippingAddress.fullName}</strong></p>
               <p style="margin: 2px 0;">${orderDetails.shippingAddress.addressLine1}</p>
-              ${orderDetails.shippingAddress.addressLine2 ? `<p style="margin: 2px 0;">${orderDetails.shippingAddress.addressLine2}</p>` : ''}
+              ${orderDetails.shippingAddress.addressLine2 ? `<p style="margin: 2px 0;">${orderDetails.shippingAddress.addressLine2}</p>` : ""}
               <p style="margin: 2px 0;">${orderDetails.shippingAddress.city}, ${orderDetails.shippingAddress.state} ${orderDetails.shippingAddress.pincode}</p>
               <p style="margin: 2px 0;">Phone: ${orderDetails.shippingAddress.phone}</p>
             </div>
@@ -255,9 +262,14 @@ export const sendOrderConfirmation = async (userEmail, orderDetails) => {
   try {
     const transporter = await createTransporter();
     await transporter.sendMail(mailOptions);
-    console.log(`Order confirmation email sent to ${userEmail} for order ${orderDetails._id}`);
+    console.log(
+      `Order confirmation email sent to ${userEmail} for order ${orderDetails._id}`,
+    );
   } catch (error) {
-    console.error(`Error sending order confirmation email for order ${orderDetails._id}:`, error);
+    console.error(
+      `Error sending order confirmation email for order ${orderDetails._id}:`,
+      error,
+    );
     // Handle error appropriately (e.g., log to a monitoring service)
   }
 };
@@ -273,7 +285,10 @@ export const sendOrderNotificationToAdmin = async (orderDetails) => {
   const userEmail = orderDetails.userId?.email || "N/A";
 
   // Calculate item subtotal
-  const itemsSubtotal = orderDetails.items.reduce((sum, item) => sum + item.quantity * item.price, 0);
+  const itemsSubtotal = orderDetails.items.reduce(
+    (sum, item) => sum + item.quantity * item.price,
+    0,
+  );
 
   const mailOptions = {
     from: `"${companyName} System" <${process.env.ADMIN_EMAIL}>`, // Identify the sender
@@ -316,7 +331,7 @@ export const sendOrderNotificationToAdmin = async (orderDetails) => {
           <div class="section order-overview">
             <h3>Order Overview</h3>
             <p><span class="label">Order ID:</span> <strong>#${orderDetails._id}</strong></p>
-            <p><span class="label">Order Date:</span> ${format(new Date(orderDetails.createdAt), 'PPP p')}</p>
+            <p><span class="label">Order Date:</span> ${format(new Date(orderDetails.createdAt), "PPP p")}</p>
             <p><span class="label">Order Status:</span> <strong>${orderDetails.status}</strong></p>
             <p><span class="label">Total Amount:</span> <strong>${formatCurrency(orderDetails.total)}</strong></p>
           </div>
@@ -325,7 +340,7 @@ export const sendOrderNotificationToAdmin = async (orderDetails) => {
             <h3>Customer Information</h3>
             <p><span class="label">Name:</span> ${userName}</p>
             <p><span class="label">Email:</span> ${userEmail}</p>
-            <p><span class="label">Registered User:</span> ${orderDetails.userId ? 'Yes' : 'No (Guest)'}</p>
+            <p><span class="label">Registered User:</span> ${orderDetails.userId ? "Yes" : "No (Guest)"}</p>
             </div>
 
           <div class="section shipping-info">
@@ -359,7 +374,8 @@ export const sendOrderNotificationToAdmin = async (orderDetails) => {
               <tbody>
                 ${orderDetails.items
                   .map((item) => {
-                    const productName = item.productId?.name || "Product Unavailable"; // Safe access
+                    const productName =
+                      item.productId?.name.en || "Product Unavailable"; // Safe access
                     const itemSubtotal = item.quantity * item.price;
                     // Optionally add SKU or Product ID for admin reference
                     // const productSKU = item.productId?.sku || 'N/A';
@@ -401,12 +417,16 @@ export const sendOrderNotificationToAdmin = async (orderDetails) => {
   try {
     // Ensure ADMIN_EMAIL is configured before trying to send
     if (!process.env.ADMIN_EMAIL) {
-      console.warn(`Admin email notification skipped for order ${orderDetails._id}: ADMIN_EMAIL not set.`);
+      console.warn(
+        `Admin email notification skipped for order ${orderDetails._id}: ADMIN_EMAIL not set.`,
+      );
       return; // Don't attempt to send if no admin email is configured
     }
     const transporter = await createTransporter();
     await transporter.sendMail(mailOptions);
-    console.log(`Admin order notification sent to ${process.env.ADMIN_EMAIL} for order ${orderDetails._id}`);
+    console.log(
+      `Admin order notification sent to ${process.env.ADMIN_EMAIL} for order ${orderDetails._id}`,
+    );
   } catch (error) {
     console.error(
       `Failed to send admin notification for order ${orderDetails._id}:`,
