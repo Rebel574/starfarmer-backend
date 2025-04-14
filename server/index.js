@@ -10,7 +10,8 @@ import rateLimit from "express-rate-limit";
 
 import productsRouter from "./routes/products.js";
 import authRouter from "./routes/auth.js";
-import ordersRouter from "./routes/orders.js";
+import orderRoutes from "./routes/orders.js";
+import paymentRoutes from "./routes/payment.js";
 import cartRouter from "./routes/cart.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 
@@ -47,8 +48,9 @@ app.use("/api", limiter);
 // Routes
 app.use("/api/products", productsRouter);
 app.use("/api/auth", authRouter);
-app.use("/api/orders", ordersRouter);
 app.use("/api/cart", cartRouter);
+app.use("/api/orders", orderRoutes);
+app.use("/api/payments", paymentRoutes); // Register payment callback route
 
 // Error handling
 app.use(errorHandler);
